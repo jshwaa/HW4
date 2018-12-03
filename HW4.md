@@ -50,3 +50,35 @@ For sequences __> 100,000 bases__:
    3. Cumulative genome size sorted from largest to smallest sequences  
     
 __Because the calculations will be for the whole genome and two genome partitions, there will be 9 total plots.__
+
+For sequences __<= 100,000 bases__:
+
+   1. Sequence lengh distribution
+   ```
+   bioawk -c fastx 'length($seq) <= 100000 { print length($seq) }' *fasta | sort | uniq -c | column -t > seqlengthsunder100
+   ```
+
+For sequences __<= 100,000 bases__:
+
+   1. Sequence lengh distribution
+   ```
+   bioawk -c fastx 'length($seq) > 100000 { print length($seq) }' *fasta | sort | uniq -c | column -t > seqlengthsover100
+   ```
+   
+# Genome assembly
+Note: This part of homework 4 is still being arranged. When this note is gone, it should be ready.
+
+## Assemble a genome from MinION reads
+Hint: Read up on miniasm here. We're using one of the simplest assembly approaches possible. This assembly can literally be accomplished with three lines of code. This will literally take only 3 command lines.
+
+   1. Download the reads from here
+   2. Use minimap to overlap reads
+   3. Use miniasm to construct an assembly
+   
+To use minimap to overlap reads, queue into a node and run the following:
+```
+wget https://hpc.oit.uci.edu/~solarese/ee282/iso1_onp_a2_1kb.fastq.gz
+qrsh -q free128 -pe openmp 32
+gunzip iso1_onp_a2_1kb.fastq.gz
+minimap -t 32 -Sw5 -L100 -m0 iso*.fastq iso*.fastq | gzip -1 > iso1_onp.paf.gz
+
