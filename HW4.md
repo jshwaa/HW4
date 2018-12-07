@@ -1,3 +1,8 @@
+# Summarize partitions of a genome assembly
+__We will be revisiting the Drosophila melanogaster genome. As with Homework 3, start at flybase.org. Go to the most current download genomes section and download the gzipped fasta file for all chromosomes.__
+
+__Hint: The partitioning can be accomplished in many different ways. In my opinion, the easiest way is by using bioawk and faSize. The bioawk tool can be found in the module jje/jjeutils and the fa* utilities can be found in the module jje/kent.__
+
 ## Calculate the following for all sequences ≤ 100kb and all sequences > 100kb:
 
    1. Total number of nucleotides
@@ -6,38 +11,44 @@
 
 __Because the calculations will be for two genome partitions, there will be 6 total responses.__
 
-
-For sequences __<= 100,000 bases__:
-
-   1. Total number of nucleotides
+First, load the requisite modules and files for this assignment:
+```
+module load jje/jjeutils
+module load rstudio
+wget
+```
+   
+   __1. Total number of nucleotides__
+   For sequences __<=100kb__:
    ```
    bioawk -c fastx 'length($seq) <= 100000 { print $seq }' *fasta | tr -d '\n' | wc -m
    6178042
    ```
-   2. Total number of Ns
-   ```
-   bioawk -c fastx 'length($seq) <= 100000 { print $seq }' *fasta | tr -cd '[N]' | wc -m
-   662593
-   ```
-   3. Total number of sequences
-   ```
-   bioawk -c fastx 'length($seq) <= 100000 { print $seq }' *fasta | wc -l
-   1863
-   ```
-   
-For sequences __> 100,000 bases__:
-
-   1. Total number of nucleotides
+   For sequences __>100kb:__
    ```
    bioawk -c fastx 'length($seq) > 100000 { print $seq }' *fasta | tr -d '\n' | wc -m
    137547960
    ```
-   2. Total number of Ns
+   
+   __2. Total number of Ns__
+   For sequences __<=100kb__:
+   ```
+   bioawk -c fastx 'length($seq) <= 100000 { print $seq }' *fasta | tr -cd '[N]' | wc -m
+   662593
+   ```
+   For sequences __>100kb__:
    ```
    bioawk -c fastx 'length($seq) > 100000 { print $seq }' *fasta | tr -cd '[N]' | wc -m
    490385
    ```
-   3. Total number of sequences
+   
+   __3. Total number of sequences__
+   For sequences __<=100kb__:
+   ```
+   bioawk -c fastx 'length($seq) <= 100000 { print $seq }' *fasta | wc -l
+   1863
+   ```
+   For sequences __>100kb__:
    ```
    bioawk -c fastx 'length($seq) > 100000 { print $seq }' *fasta | wc -l
    7
@@ -51,19 +62,85 @@ For sequences __> 100,000 bases__:
     
 __Because the calculations will be for the whole genome and two genome partitions, there will be 9 total plots.__
 
-For sequences __<= 100,000 bases__:
+   __1. Sequence lengh distribution__
+   For __whole genome__:
+   ```
+   bioawk -c fastx '{ print length($seq) }' *fasta | sort -n | uniq -c | column -t > seqlengthwhole
+   ```
+   For sequences __<=100kb__:
+   ```
+   bioawk -c fastx 'length($seq) <= 100000 { print length($seq) }' *fasta | sort -n | uniq -c | column -t > seqlengthunder
+   ```
+   For sequences __>100kb__: 
+   ```
+   bioawk -c fastx 'length($seq) > 100000 { print length($seq) }' *fasta | sort -n | uniq -c | column -t > seqlengthover
+   ```
+   Following creation of these length counts, create the R script:
+   ```
+   
+   
 
-   1. Sequence lengh distribution
+   __2. Sequence GC% distribution__
+   For whole genome:
    ```
-   bioawk -c fastx 'length($seq) <= 100000 { print length($seq) }' *fasta | sort | uniq -c | column -t > seqlengthsunder100
+   bioawk -c fastx '{ print length($seq) }' *fasta | sort -n | uniq -c | column -t > seqlengthwhole
+   ```
+   For sequences <= 100kb:
+   ```
+   bioawk -c fastx 'length($seq) <= 100000 { print length($seq) }' *fasta | sort -n | uniq -c | column -t > seqlengthunder
+   ```
+   For sequences >100kb: 
+   ```
+   bioawk -c fastx 'length($seq) > 100000 { print length($seq) }' *fasta | sort -n | uniq -c | column -t > seqlengthover
+   ```
+   
+   __3. Cumulative genomze size sorted from largest to smallest sequences__
+   For __whole genome__:
+   ```
+   mkfifo seqwhole_fifo
+
+   bioawk -c fastx '{ print length($seq) }' *fasta \
+   | sort -rn \
+   | awk ' BEGIN { print "Assembly\tLength\nWhole_Genome\t0" } { print "Whole_Genome\t" $1 } ' \
+   > seqwhole_fifo & 
+
+   plotCDF2 seqwhole_fifo seqwholecdf.png
+
+   rm seqwhole_fifo
+
+   display seqwholecdf.png
+   ```
+   For sequences __<=100kb__:
+   ```
+   mkfifo sequnder_fifo
+
+   bioawk -c fastx 'length($seq) <= 100000 { print length($seq) }' *fasta \
+   | sort -rn \
+   | awk ' BEGIN { print "Assembly\tLength\nSeqLength<=100kb\t0" } { print "SeqLength<=100kb\t" $1 } ' \
+   > sequnder_fifo & 
+
+   plotCDF2 sequnder_fifo sequnder.png
+
+   rm sequnder_fifo
+
+   display sequnder.png
+   ```
+   For sequences __>100kb__:
+   ```
+    mkfifo seqover_fifo
+
+   bioawk -c fastx 'length($seq) > 100000 { print length($seq) }' *fasta \
+   | sort -rn \
+   | awk ' BEGIN { print "Assembly\tLength\nSeqLength>100kb\t0" } { print "SeqLength>100kb\t" $1 } ' \
+   > seqover_fifo & 
+
+   plotCDF2 seqover_fifo seqover.png
+
+   rm seqover_fifo
+
+   display seqover.png
    ```
 
-For sequences __<= 100,000 bases__:
-
-   1. Sequence lengh distribution
-   ```
-   bioawk -c fastx 'length($seq) > 100000 { print length($seq) }' *fasta | sort | uniq -c | column -t > seqlengthsover100
-   ```
    
 # Genome assembly
 Note: This part of homework 4 is still being arranged. When this note is gone, it should be ready.
