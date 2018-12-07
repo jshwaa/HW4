@@ -19,6 +19,7 @@ wget
 ```
    
    __1. Total number of nucleotides__
+   
    For sequences __<=100kb__:
    ```
    bioawk -c fastx 'length($seq) <= 100000 { print $seq }' *fasta | tr -d '\n' | wc -m
@@ -31,6 +32,7 @@ wget
    ```
    
    __2. Total number of Ns__
+   
    For sequences __<=100kb__:
    ```
    bioawk -c fastx 'length($seq) <= 100000 { print $seq }' *fasta | tr -cd '[N]' | wc -m
@@ -43,6 +45,7 @@ wget
    ```
    
    __3. Total number of sequences__
+   
    For sequences __<=100kb__:
    ```
    bioawk -c fastx 'length($seq) <= 100000 { print $seq }' *fasta | wc -l
@@ -75,9 +78,35 @@ __Because the calculations will be for the whole genome and two genome partition
    ```
    bioawk -c fastx 'length($seq) > 100000 { print length($seq) }' *fasta | sort -n | uniq -c | column -t > seqlengthover
    ```
-   Following creation of these length counts, create the R script:
+   After creation of these length counts, create and save the following R script as "seqdist.R":
    ```
-   
+   whole <-  read.table('seqlengthwhole')
+   under <- read.table('seqlengthunder')
+   over <- read.table('seqlengthover')
+
+   whole$V2 <- whole$V2/1000
+   under$V2 <- under$V2/1000
+   over$V2 <- over$V2/1000
+
+   png("seqlengthwhole.png",width=480,height=480)
+   plot(x=whole$V2, y=whole$V1, type='h', xlab='Sequence Length (kb)', ylab='Count', main='Sequence Length Distribution Whole Genome')
+   dev.off()
+
+   png("seqlengthunder.png",width=480,height=480)
+   underplot <- plot(x=under$V2, y=under$V1, type='h', xlab='Sequence Length (kb)', ylab='Count', main='Sequence Length Distribution        (<=100kb)')
+   dev.off()
+
+   png("seqlengthover.png",width=480,height=480)
+   overplot <- plot(x=over$V2, y=over$V1, type='h', xlab='Sequence Length (kb)', ylab='Count', main='Sequence Length Distribution          (>100kb)')
+   dev.off()
+   ```
+   And run it with `Rscript seqdist.R` to create png images of distribution plots of each.
+   Finally, view the plots with:
+   ```
+   display seqlengthwhole.png
+   display seqlengthunder.png
+   display seqlengthover.png
+   ```
    
 
    __2. Sequence GC% distribution__
@@ -158,4 +187,4 @@ wget https://hpc.oit.uci.edu/~solarese/ee282/iso1_onp_a2_1kb.fastq.gz
 qrsh -q free128 -pe openmp 32
 gunzip iso1_onp_a2_1kb.fastq.gz
 minimap -t 32 -Sw5 -L100 -m0 iso*.fastq iso*.fastq | gzip -1 > iso1_onp.paf.gz
-
+```
