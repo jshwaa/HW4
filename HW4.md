@@ -78,51 +78,74 @@ __Because the calculations will be for the whole genome and two genome partition
    ```
    bioawk -c fastx 'length($seq) > 100000 { print length($seq) }' *fasta | sort -n | uniq -c | column -t > seqlengthover
    ```
+   
+   __2. Sequence GC% distribution__
+   For whole genome:
+   ```
+   bioawk -c fastx '{ print gc($seq) }' *fasta | sort -n | uniq -c | column -t > seqgcwhole
+   ```
+   For sequences <= 100kb:
+   ```
+   bioawk -c fastx 'length($seq) <= 100000 { print gc($seq) }' *fasta | sort -n | uniq -c | column -t > seqgcunder
+   ```
+   For sequences >100kb: 
+   ```
+   bioawk -c fastx 'length($seq) > 100000 { print gc($seq) }' *fasta | sort -n | uniq -c | column -t > seqgcover
+   ```
+   
    After creation of these length counts, create and save the following R script as "seqdist.R":
    ```
-   whole <-  read.table('seqlengthwhole')
-   under <- read.table('seqlengthunder')
-   over <- read.table('seqlengthover')
+   lengthwhole <-  read.table('seqlengthwhole')
+   lengthunder <- read.table('seqlengthunder')
+   lengthover <- read.table('seqlengthover')
+   gcwhole <- read.table('seqgcwhole')
+   gcunder <- read.table('seqgcunder')
+   gcover <- read.table('seqgcover')
 
-   whole$V2 <- whole$V2/1000
-   under$V2 <- under$V2/1000
-   over$V2 <- over$V2/1000
+   lengthwhole$V2 <- lengthwhole$V2/1000
+   lengthunder$V2 <- lengthunder$V2/1000
+   lengthover$V2 <- lengthover$V2/1000
+
+   gcwhole$V2 <- gcwhole$V2*100
+   gcunder$V2 <- gcunder$V2*100
+   gcover$V2 <- gcovere$V2*100
+
 
    png("seqlengthwhole.png",width=480,height=480)
-   plot(x=whole$V2, y=whole$V1, type='h', xlab='Sequence Length (kb)', ylab='Count', main='Sequence Length Distribution Whole Genome')
+   plot(x=lengthwhole$V2, y=lengthwhole$V1, type='h', xlab='Sequence Length (kb)', ylab='Count', main='Sequence Length Distribution        Whole Genome')
    dev.off()
 
    png("seqlengthunder.png",width=480,height=480)
-   underplot <- plot(x=under$V2, y=under$V1, type='h', xlab='Sequence Length (kb)', ylab='Count', main='Sequence Length Distribution        (<=100kb)')
+   plot(x=lengthunder$V2, y=lengthunder$V1, type='h', xlab='Sequence Length (kb)', ylab='Count', main='Sequence Length Distribution        (<=100kb)')
    dev.off()
 
    png("seqlengthover.png",width=480,height=480)
-   overplot <- plot(x=over$V2, y=over$V1, type='h', xlab='Sequence Length (kb)', ylab='Count', main='Sequence Length Distribution          (>100kb)')
+   plot(x=lengthover$V2, y=lengthover$V1, type='h', xlab='Sequence Length (kb)', ylab='Count', main='Sequence Length Distribution          (>100kb)')
+   dev.off()
+
+   png("seqgcwhole.png",width=480,height=480)
+   plot(x=gcwhole$V2, y=gcwhole$V1, type='h', xlab='GC%', ylab='Count', main='Whole Genome GC%')
+   dev.off()
+
+   png("seqgcunder.png",width=480,height=480)
+   plot(x=gcunder$V2, y=gcunder$V1, type='h', xlab='GC%', ylab='Count', main='Sequence Length <=100kb GC%')
+   dev.off()
+
+   png("seqgcover.png",width=480,height=480)
+   plot(x=gcover$V2, y=gcover$V1, type='h', xlab='GC%', ylab='Count', main='Sequence Length >100kb GC%')
    dev.off()
    ```
-   And run it with `Rscript seqdist.R` to create png images of distribution plots of each.
+   And run it with `Rscript seqdist.R` to create png images of distribution plots of each partition.
    Finally, view the plots with:
    ```
    display seqlengthwhole.png
    display seqlengthunder.png
    display seqlengthover.png
+   display seqgcwhole.png
+   display seqgcunder.png
+   display seqgcover.png
    ```
-   
-
-   __2. Sequence GC% distribution__
-   For whole genome:
-   ```
-   bioawk -c fastx '{ print length($seq) }' *fasta | sort -n | uniq -c | column -t > seqlengthwhole
-   ```
-   For sequences <= 100kb:
-   ```
-   bioawk -c fastx 'length($seq) <= 100000 { print length($seq) }' *fasta | sort -n | uniq -c | column -t > seqlengthunder
-   ```
-   For sequences >100kb: 
-   ```
-   bioawk -c fastx 'length($seq) > 100000 { print length($seq) }' *fasta | sort -n | uniq -c | column -t > seqlengthover
-   ```
-   
+  
    __3. Cumulative genomze size sorted from largest to smallest sequences__
    For __whole genome__:
    ```
