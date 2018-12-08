@@ -13,9 +13,12 @@ __Because the calculations will be for two genome partitions, there will be 6 to
 
 First, load the requisite modules and files for this assignment:
 ```
+mkdir ~/homework4
+cd ~/homework4
 module load jje/jjeutils
 module load rstudio
-wget
+wget ftp://ftp.flybase.net/genomes/Drosophila_melanogaster/current/fasta/dmel-all-chromosome-r6.24.fasta.gz
+gunzip dmel-all-chromosome-r6.24.fasta.gz
 ```
    
    __1. Total number of nucleotides__
@@ -72,11 +75,13 @@ __Because the calculations will be for the whole genome and two genome partition
    ```
    For sequences __<=100kb__:
    ```
-   bioawk -c fastx 'length($seq) <= 100000 { print length($seq) }' *fasta | sort -n | uniq -c | column -t > seqlengthunder
+   bioawk -c fastx 'length($seq) <= 100000 { print length($seq) }' *fasta | sort -n | uniq -c | column -t \
+   > seqlengthunder
    ```
    For sequences __>100kb__: 
    ```
-   bioawk -c fastx 'length($seq) > 100000 { print length($seq) }' *fasta | sort -n | uniq -c | column -t > seqlengthover
+   bioawk -c fastx 'length($seq) > 100000 { print length($seq) }' *fasta | sort -n | uniq -c | column -t \
+   > seqlengthover
    ```
    
    __2. Sequence GC% distribution__
@@ -86,11 +91,13 @@ __Because the calculations will be for the whole genome and two genome partition
    ```
    For sequences <= 100kb:
    ```
-   bioawk -c fastx 'length($seq) <= 100000 { print gc($seq) }' *fasta | sort -n | uniq -c | column -t > seqgcunder
+   bioawk -c fastx 'length($seq) <= 100000 { print gc($seq) }' *fasta | sort -n | uniq -c | column -t \
+   > seqgcunder
    ```
    For sequences >100kb: 
    ```
-   bioawk -c fastx 'length($seq) > 100000 { print gc($seq) }' *fasta | sort -n | uniq -c | column -t > seqgcover
+   bioawk -c fastx 'length($seq) > 100000 { print gc($seq) }' *fasta | sort -n | uniq -c | column -t \
+   > seqgcover
    ```
    
    After creation of these length counts, create and save the following R script as "seqdist.R":
