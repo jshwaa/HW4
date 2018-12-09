@@ -244,6 +244,22 @@ __Hint: For MUMmer, you should run nucmer, delta-filter, and mummerplot.__
         
    __2. Compare your assembly to the contig assembly (not the scaffold assembly!) from Drosophila melanogaster on FlyBase using a               dotplot constructed with MUMmer (Hint: use faSplitByN as demonstrated in class)
 
+   First, split the Drosophila assembly into contigs with FaSplitByN:
+   
+   ```
+   faSplitByN dmel-all-chromosome-r6.24.fasta dmelseqcontigs.fasta 10
+   ```
+   
+   Then, use nucmer to perform DNA sequence alignment between the two contig assemblies, delta-filter to filter out one-to-one              reference-query alignments from the resultant delta file, and mummerplot to generate the alignment plots:
+   
+   ```
+   nucmer -l 100 -c 100 -d 10 -D 5 -prefix contigaligned dmelseqcontigs.fasta reads.fa \
+   delta-filter -q -r contigaligned.delta > contigalignedfilter.delta
+   mummerplot --fat --layout --filter -p contigalignedfilter contigalignedfilter.delta -R dmelseqcontigs.fa -Q reads.fa --png
+   display contigalignedfilter.png
+   ```
+
+
    __3. Compare your assembly to both the contig assembly and the scaffold assembly from the Drosophila melanogaster on FlyBase using a         contiguity plot (Hint: use plotCDF2 as demonstrated in class and see this example)
 
    ```
