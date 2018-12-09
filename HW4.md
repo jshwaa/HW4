@@ -246,6 +246,18 @@ __Hint: For MUMmer, you should run nucmer, delta-filter, and mummerplot.__
 
    __3. Compare your assembly to both the contig assembly and the scaffold assembly from the Drosophila melanogaster on FlyBase using a         contiguity plot (Hint: use plotCDF2 as demonstrated in class and see this example)
 
+   ```
+   mkfifo {FBscaffold,FBcontig,minimap}_fifo
+   
+   bioawk -c fastx '{ print length($seq) }' reads.fa | sort -rn | awk ' BEGIN { print "Assembly\tLength\nMinimap\t0" } { print              "Minimap\t" $1 } ' > minimap_fifo
+   
+   bioawk -c fastx '{ print length($seq) }' dmelseqcontigs.fasta | sort -rn | awk ' BEGIN { print "Assembly\tLength\nFB_Contigs\t0" } {    print "FB_Contigs\t" $1 } ' > FBcontig_fifo
+   
+   bioawk -c fastx '{ print length($seq) }' dmel-all*.fasta | sort -rn | awk ' BEGIN { print "Assembly\tLength\nFB_Scaffold\t0" } {        print "FB_Scaffold\t" $1 } ' > FBscaffold_fifo
+   
+   plotCDF2 {dmelscaffold,dmelcontig,minimap}_fifo minimapCDF.png
+   ```
+
    __4. Calculate BUSCO scores of both assemblies and compare them
 
 
