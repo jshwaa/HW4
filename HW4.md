@@ -202,19 +202,52 @@ __Because the calculations will be for the whole genome and two genome partition
 
    
 # Genome assembly
-Note: This part of homework 4 is still being arranged. When this note is gone, it should be ready.
+__Note: This part of homework 4 is still being arranged. When this note is gone, it should be ready.__
 
 ## Assemble a genome from MinION reads
-Hint: Read up on miniasm here. We're using one of the simplest assembly approaches possible. This assembly can literally be accomplished with three lines of code. This will literally take only 3 command lines.
+__Hint: Read up on miniasm here. We're using one of the simplest assembly approaches possible. This assembly can literally be accomplished with three lines of code. This will literally take only 3 command lines.__
 
-   1. Download the reads from here
-   2. Use minimap to overlap reads
-   3. Use miniasm to construct an assembly
+   __1. Download the reads from here__
+   __2. Use minimap to overlap reads__
+   __3. Use miniasm to construct an assembly__
    
-To use minimap to overlap reads, queue into a node and run the following:
+To use miniasm, first download the reads, queue into a node and run minimap to perform all-vs-all read self-mapping with the following:
 ```
 wget https://hpc.oit.uci.edu/~solarese/ee282/iso1_onp_a2_1kb.fastq.gz
 qrsh -q free128 -pe openmp 32
 gunzip iso1_onp_a2_1kb.fastq.gz
-minimap -t 32 -Sw5 -L100 -m0 iso*.fastq iso*.fastq | gzip -1 > iso1_onp.paf.gz
+minimap -t 32 -Sw5 -L100 -m0 iso1_onp_a2_1kb.fastq iso1_onp_a2_1kb.fastq | gzip -1 > iso1_onp.paf.gz
 ```
+Then, to use minimap for de novo assembly and the generation of a GFA assembly graph, enter the following at the command line:
+```
+$miniasm -f iso1_onp_a2_1kb.fastq iso1_onp.paf.gz > reads.gfa
+```
+
+# Assembly assessment
+__Hint: For MUMmer, you should run nucmer, delta-filter, and mummerplot.__
+
+   __1. Calculate the N50 of your assembly (this can be done with only faSize+awk+sort or with bioawk+awk+sort) and compare it to the           Drosophila community reference's contig N50 (here)__
+        To calculate the N50, first convert the assembly file to fasta format for use with bioawk:
+        ```
+        awk ' $0 ~/^S/ { print ">" $2" \n" $3 } ' reads.gfa > reads.fa
+        ```
+        Then, use the following to determine the n50, the length at which 50% of the genome is contained in contig lengths of greater or         equal size:
+        ```
+        bioawk -c fastx ' { print length($seq); n=n+length($seq); } END { print n; } ' reads.fa \
+        | sort -rn \
+        | gawk ' NR == 1 { n = $1 }; NR > 1 { ni = $1 + ni; } ni/n > 0.5 { print $1; exit; } ' 
+        
+        4494246
+        ```
+        
+
+   __2. Compare your assembly to the contig assembly (not the scaffold assembly!) from Drosophila melanogaster on FlyBase using a               dotplot constructed with MUMmer (Hint: use faSplitByN as demonstrated in class)
+
+   __3. Compare your assembly to both the contig assembly and the scaffold assembly from the Drosophila melanogaster on FlyBase using a         contiguity plot (Hint: use plotCDF2 as demonstrated in class and see this example)
+
+   __4. Calculate BUSCO scores of both assemblies and compare them
+
+awk ' $0 ~/^S/ { print ">" $2" \n" $3 } ' $processed/reads.gfa \
+| tee >(n50 /dev/stdin > $reports/n50.txt) \
+| fold -w 60 \
+> $processed/unitigs.fa
