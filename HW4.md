@@ -236,7 +236,6 @@ __Hint: For MUMmer, you should run nucmer, delta-filter, and mummerplot.__
         bioawk -c fastx ' { print length($seq); n=n+length($seq); } END { print n; } ' reads.fa \
         | sort -rn \
         | gawk ' NR == 1 { n = $1 }; NR > 1 { ni = $1 + ni; } ni/n > 0.5 { print $1; exit; } ' 
-        
         4494246
         ```
         
@@ -247,7 +246,4 @@ __Hint: For MUMmer, you should run nucmer, delta-filter, and mummerplot.__
 
    __4. Calculate BUSCO scores of both assemblies and compare them
 
-awk ' $0 ~/^S/ { print ">" $2" \n" $3 } ' $processed/reads.gfa \
-| tee >(n50 /dev/stdin > $reports/n50.txt) \
-| fold -w 60 \
-> $processed/unitigs.fa
+
