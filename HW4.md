@@ -215,6 +215,8 @@ To use miniasm, first download the reads, queue into a node and run minimap to p
 ```
 wget https://hpc.oit.uci.edu/~solarese/ee282/iso1_onp_a2_1kb.fastq.gz
 qrsh -q free128 -pe openmp 32
+module load jje/jjeutils
+module load rstudio
 gunzip iso1_onp_a2_1kb.fastq.gz
 minimap -t 32 -Sw5 -L100 -m0 iso1_onp_a2_1kb.fastq iso1_onp_a2_1kb.fastq | gzip -1 > iso1_onp.paf.gz
 ```
@@ -225,6 +227,18 @@ $miniasm -f iso1_onp_a2_1kb.fastq iso1_onp.paf.gz > reads.gfa
 
 # Assembly assessment
 __Hint: For MUMmer, you should run nucmer, delta-filter, and mummerplot.__
+
+Again, log into an appropriate node and load the requisite modules/files:
+
+```
+qrsh -q free128 -pe openmp 32
+module load jje/jjeutils
+module load rstudio
+module load MUMmer/3.23
+module load augustus/3.2.1
+module load blast/2.2.31 hmmer/3.1b2 boost/1.54.0
+source /pub/jje/ee282/bin/.buscorc
+```
 
    __1. Calculate the N50 of your assembly (this can be done with only faSize+awk+sort or with bioawk+awk+sort) and compare it to the      Drosophila community reference's contig N50 (here).__ 
    To calculate the N50, first convert the assembly file to fasta format for use with bioawk:   
@@ -253,9 +267,12 @@ __Hint: For MUMmer, you should run nucmer, delta-filter, and mummerplot.__
    Then, use nucmer to perform DNA sequence alignment between the two contig assemblies, delta-filter to filter out one-to-one              reference-query alignments from the resultant delta file, and mummerplot to generate the alignment plots:
    
    ```
-   nucmer -l 100 -c 100 -d 10 -D 5 -prefix contigaligned dmelseqcontigs.fasta reads.fa \
+   nucmer -l 100 -c 100 -d 10 -D 5 -prefix contigaligned dmelseqcontigs.fasta reads.fa 
+   
    delta-filter -q -r contigaligned.delta > contigalignedfilter.delta
+   
    mummerplot --fat --layout --filter -p contigalignedfilter contigalignedfilter.delta -R dmelseqcontigs.fa -Q reads.fa --png
+   
    display contigalignedfilter.png
    ```
 
@@ -275,5 +292,9 @@ __Hint: For MUMmer, you should run nucmer, delta-filter, and mummerplot.__
    ```
 
    __4. Calculate BUSCO scores of both assemblies and compare them
-
-
+   
+   ```
+   BUSCO.py -c 8 -i reads.fa -m geno -o BuscoMini -l /pub/jje/ee282/bin/busco/lineages/diptera_odb9
+   BUSCO.py -c 8 -i reads.fa -m geno -o BuscoFB -l /pub/jje/ee282/bin/busco/lineages/diptera_odb9
+   ```
+   
