@@ -227,11 +227,11 @@ $miniasm -f iso1_onp_a2_1kb.fastq iso1_onp.paf.gz > reads.gfa
 __Hint: For MUMmer, you should run nucmer, delta-filter, and mummerplot.__
 
    __1. Calculate the N50 of your assembly (this can be done with only faSize+awk+sort or with bioawk+awk+sort) and compare it to the           Drosophila community reference's contig N50 (here)__
-        To calculate the N50, first convert the assembly file to fasta format for use with bioawk:
+        To calculate the N50, first convert the assembly file to fasta format for use with bioawk:      
         ```
         awk ' $0 ~/^S/ { print ">" $2" \n" $3 } ' reads.gfa > reads.fa
         ```
-        Then, use the following to determine the n50, the length at which 50% of the genome is contained in contig lengths of greater or         equal size:
+        Then, use the following to determine the n50, the length at which 50% of the genome is contained in contig lengths of greater or         equal size:  
         ```
         bioawk -c fastx ' { print length($seq); n=n+length($seq); } END { print n; } ' reads.fa \
         | sort -rn \
