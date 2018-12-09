@@ -306,5 +306,14 @@ source /pub/jje/ee282/bin/.buscorc
    2799 Total BUSCO groups searched
   
    BUSCO.py -c 8 -i reads.fa -m geno -o BuscoFB -l /pub/jje/ee282/bin/busco/lineages/diptera_odb9
+   
+   Results:
+	C:98.3%[S:97.8%,D:0.5%],F:0.9%,M:0.8%,n:2799
+	2751 Complete BUSCOs (C)
+	2737 Complete and single-copy BUSCOs (S)
+	14 Complete and duplicated BUSCOs (D)
+	25 Fragmented BUSCOs (F)
+	23 Missing BUSCOs (M)
+	2799 Total BUSCO groups searched
    ```
    
