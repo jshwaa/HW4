@@ -116,7 +116,7 @@ __Because the calculations will be for the whole genome and two genome partition
 
    gcwhole$V2 <- gcwhole$V2*100
    gcunder$V2 <- gcunder$V2*100
-   gcover$V2 <- gcovere$V2*100
+   gcover$V2 <- gcover$V2*100
 
 
    png("seqlengthwhole.png",width=480,height=480)
