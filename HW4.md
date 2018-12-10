@@ -246,6 +246,7 @@ source /pub/jje/ee282/bin/.buscorc
 ```
 
    __1. Calculate the N50 of your assembly (this can be done with only faSize+awk+sort or with bioawk+awk+sort) and compare it to the      Drosophila community reference's contig N50 (here).__ 
+   
    To calculate the N50, first convert the assembly file to fasta format for use with bioawk:   
         
    ```
@@ -257,11 +258,13 @@ source /pub/jje/ee282/bin/.buscorc
    ```
    bioawk -c fastx ' { print length($seq); n=n+length($seq); } END { print n; } ' reads.fa \
    | sort -rn \
-   | gawk ' NR == 1 { n = $1 }; NR > 1 { ni = $1 + ni; } ni/n > 0.5 { print $1; exit; } ' \
+   | gawk ' NR == 1 { n = $1 }; NR > 1 { ni = $1 + ni; } ni/n > 0.5 { print $1; exit; } ' 
+   
    4494246
    ```
-        
-   __2. Compare your assembly to the contig assembly (not the scaffold assembly!) from Drosophila melanogaster on FlyBase using a               dotplot constructed with MUMmer (Hint: use faSplitByN as demonstrated in class)__
+   The Drosophila community's reference contig N50 is 21,485,538, a much greater length than the N50 gained from minimap/miniasm 	    assembly here. This indicates that my de novo genome is covered by contigs of much smaller length, leaving more room for sequence        inaccuracies.
+  
+   __2. Compare your assembly to the contig assembly (not the scaffold assembly!) from Drosophila melanogaster on FlyBase using a          dotplot constructed with MUMmer (Hint: use faSplitByN as demonstrated in class)__
 
    First, split the Drosophila assembly into contigs with FaSplitByN:
    
@@ -276,7 +279,7 @@ source /pub/jje/ee282/bin/.buscorc
    
    delta-filter -q -r contigaligned.delta > contigalignedfilter.delta
    
-   mummerplot --fat --layout --filter -p contigalignedfilter contigalignedfilter.delta -R dmelseqcontigs.fa -Q reads.fa --png
+   mummerplot --fat --layout --filter -p contigalignedfilter contigalignedfilter.delta -R dmelseqcontigs.fasta -Q reads.fa --png
    
    display contigalignedfilter.png
    ```
@@ -287,13 +290,17 @@ source /pub/jje/ee282/bin/.buscorc
    ```
    mkfifo {FBscaffold,FBcontig,minimap}_fifo
    
-   bioawk -c fastx '{ print length($seq) }' reads.fa | sort -rn | awk ' BEGIN { print "Assembly\tLength\nMinimap\t0" } { print              "Minimap\t" $1 } ' > minimap_fifo
+   bioawk -c fastx '{ print length($seq) }' reads.fa | sort -rn | awk ' BEGIN { print "Assembly\tLength\nMinimap\t0" } { print              "Minimap\t" $1 } ' > minimap_fifo &
    
-   bioawk -c fastx '{ print length($seq) }' dmelseqcontigs.fasta | sort -rn | awk ' BEGIN { print "Assembly\tLength\nFB_Contigs\t0" } {    print "FB_Contigs\t" $1 } ' > FBcontig_fifo
+   bioawk -c fastx '{ print length($seq) }' dmelseqcontigs.fasta | sort -rn | awk ' BEGIN { print "Assembly\tLength\nFB_Contigs\t0" } {    print "FB_Contigs\t" $1 } ' > FBcontig_fifo &
    
-   bioawk -c fastx '{ print length($seq) }' dmel-all*.fasta | sort -rn | awk ' BEGIN { print "Assembly\tLength\nFB_Scaffold\t0" } {        print "FB_Scaffold\t" $1 } ' > FBscaffold_fifo
+   bioawk -c fastx '{ print length($seq) }' dmel-all*.fasta | sort -rn | awk ' BEGIN { print "Assembly\tLength\nFB_Scaffold\t0" } {        print "FB_Scaffold\t" $1 } ' > FBscaffold_fifo &
    
-   plotCDF2 {dmelscaffold,dmelcontig,minimap}_fifo minimapCDF.png
+   plotCDF2 {FBscaffold,FBcontig,minimap}_fifo minimapCDF.png
+   
+   display minimapCDF.png
+   
+   rm {FBscaffold,FBcontig,minimap}_fifo
    ```
 
    __4. Calculate BUSCO scores of both assemblies and compare them__
@@ -311,7 +318,7 @@ source /pub/jje/ee282/bin/.buscorc
         2799    Total BUSCO groups searched
 
   
-   BUSCO.py -c 8 -i dmelseqcontigs.fa -m geno -o BuscoFB -l /pub/jje/ee282/bin/busco/lineages/diptera_odb9
+   BUSCO.py -c 8 -i dmelseqcontigs.fasta -m geno -o BuscoFB -l /pub/jje/ee282/bin/busco/lineages/diptera_odb9
    
    Results:
 	C:98.7%[S:98.2%,D:0.5%],F:0.8%,M:0.5%,n:2799
@@ -322,4 +329,4 @@ source /pub/jje/ee282/bin/.buscorc
         15      Missing BUSCOs (M)
         2799    Total BUSCO groups searched
    ```
-   
+   What BUSCO analysis tells us is that the quality of the FlyBase contigs for Drosophila melanogaster is much higher than those 	    generated via minimap/miniasm, as the former has virtually every universal single-copy ortholog checked for by BUSCO while the latter    only has 13. As such, the miniasm assembly is missing a much larger proportion of BUSCOs (98.4% missing vs. 0.5% for FlyBase) and is    of much lower quality.
