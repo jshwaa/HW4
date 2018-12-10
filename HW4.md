@@ -66,9 +66,10 @@ gunzip dmel-all-chromosome-r6.24.fasta.gz
    2. Sequence GC% distribution  
    3. Cumulative genome size sorted from largest to smallest sequences  
     
-__Because the calculations will be for the whole genome and two genome partitions, there will be 9 total plots.__
+__Because the calculations will be for the whole genome and two genome partitions, there will be 9 total plots.__ 
 
    __1. Sequence lengh distribution__
+   
    For __whole genome__:
    ```
    bioawk -c fastx '{ print length($seq) }' *fasta | sort -n | uniq -c | column -t > seqlengthwhole
