@@ -154,8 +154,11 @@ __Because the calculations will be for the whole genome and two genome partition
    display seqgcover.png
    ```
   
-   __3. Cumulative genomze size sorted from largest to smallest sequences__
+   __3. Cumulative genome size sorted from largest to smallest sequences__
+   
    For __whole genome__:
+   
+   For each partition, create a pipe to store sequence lengths from bioawk, which will be used by R's plotCDF2 function to generate 	    plots of the cumulatize genome size sorted from largest to smallest sequences.
    ```
    mkfifo seqwhole_fifo
 
