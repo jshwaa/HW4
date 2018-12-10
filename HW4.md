@@ -225,7 +225,7 @@ module load rstudio
 gunzip iso1_onp_a2_1kb.fastq.gz
 minimap -t 32 -Sw5 -L100 -m0 iso1_onp_a2_1kb.fastq iso1_onp_a2_1kb.fastq | gzip -1 > iso1_onp.paf.gz
 ```
-Then, to use minimap for de novo assembly and the generation of a GFA assembly graph, enter the following at the command line:
+Then, to use miniasm for de novo assembly and the generation of a GFA assembly graph, enter the following at the command line:
 ```
 $miniasm -f iso1_onp_a2_1kb.fastq iso1_onp.paf.gz > reads.gfa
 ```
