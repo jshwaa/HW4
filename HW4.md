@@ -227,7 +227,7 @@ minimap -t 32 -Sw5 -L100 -m0 iso1_onp_a2_1kb.fastq iso1_onp_a2_1kb.fastq | gzip 
 ```
 Then, to use miniasm for de novo assembly and the generation of a GFA assembly graph, enter the following at the command line:
 ```
-$miniasm -f iso1_onp_a2_1kb.fastq iso1_onp.paf.gz > reads.gfa
+miniasm -f iso1_onp_a2_1kb.fastq iso1_onp.paf.gz > reads.gfa
 ```
 
 # Assembly assessment
