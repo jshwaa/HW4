@@ -219,6 +219,7 @@ To use miniasm, first download the reads, queue into a node and run minimap to p
 ```
 wget https://hpc.oit.uci.edu/~solarese/ee282/iso1_onp_a2_1kb.fastq.gz
 qrsh -q free128 -pe openmp 32
+cd ~/hw4
 module load jje/jjeutils
 module load rstudio
 gunzip iso1_onp_a2_1kb.fastq.gz
