@@ -297,23 +297,24 @@ source /pub/jje/ee282/bin/.buscorc
    BUSCO.py -c 8 -i reads.fa -m geno -o BuscoMini -l /pub/jje/ee282/bin/busco/lineages/diptera_odb9
    
    Results:
-	C:0.3%[S:0.3%,D:0.0%],F:1.6%,M:98.1%,n:2799
-	8 Complete BUSCOs (C)
-	8 Complete and single-copy BUSCOs (S)
-	0 Complete and duplicated BUSCOs (D)
-	44 Fragmented BUSCOs (F)
-	2747 Missing BUSCOs (M)
-   2799 Total BUSCO groups searched
+   	C:0.5%[S:0.5%,D:0.0%],F:1.1%,M:98.4%,n:2799
+        13      Complete BUSCOs (C)
+        13      Complete and single-copy BUSCOs (S)
+        0       Complete and duplicated BUSCOs (D)
+        32      Fragmented BUSCOs (F)
+        2754    Missing BUSCOs (M)
+        2799    Total BUSCO groups searched
+
   
-   BUSCO.py -c 8 -i reads.fa -m geno -o BuscoFB -l /pub/jje/ee282/bin/busco/lineages/diptera_odb9
+   BUSCO.py -c 8 -i dmelseqcontigs.fa -m geno -o BuscoFB -l /pub/jje/ee282/bin/busco/lineages/diptera_odb9
    
    Results:
-	C:98.3%[S:97.8%,D:0.5%],F:0.9%,M:0.8%,n:2799
-	2751 Complete BUSCOs (C)
-	2737 Complete and single-copy BUSCOs (S)
-	14 Complete and duplicated BUSCOs (D)
-	25 Fragmented BUSCOs (F)
-	23 Missing BUSCOs (M)
-	2799 Total BUSCO groups searched
+	C:98.7%[S:98.2%,D:0.5%],F:0.8%,M:0.5%,n:2799
+        2763    Complete BUSCOs (C)
+        2749    Complete and single-copy BUSCOs (S)
+        14      Complete and duplicated BUSCOs (D)
+        21      Fragmented BUSCOs (F)
+        15      Missing BUSCOs (M)
+        2799    Total BUSCO groups searched
    ```
    
