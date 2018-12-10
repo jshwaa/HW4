@@ -152,7 +152,13 @@ __Because the calculations will be for the whole genome and two genome partition
    display seqgcwhole.png
    display seqgcunder.png
    display seqgcover.png
-   ```
+   ``` 
+   ![seqlengthwhole.png](https://github.com/jshwaa/HW4_files/blob/master/seqlengthwhole.png "seqlengthwhole.png")
+   ![seqlengthunder.png](https://github.com/jshwaa/HW4_files/blob/master/seqlengthunder.png "seqlengthunder.png")
+   ![seqlengthover.png](https://github.com/jshwaa/HW4_files/blob/master/seqlengthover.png "seqlengthover.png")
+   ![seqgcwhole.png](https://github.com/jshwaa/HW4_files/blob/master/seqgcwhole.png "seqgcwhole.png")
+   ![seqgcunder.png](https://github.com/jshwaa/HW4_files/blob/master/seqgcunder.png "seqgcunder.png")
+   ![seqgcover.png](https://github.com/jshwaa/HW4_files/blob/master/seqgcover.png "seqgcover.png")
   
    __3. Cumulative genome size sorted from largest to smallest sequences__
    
@@ -173,6 +179,10 @@ __Because the calculations will be for the whole genome and two genome partition
 
    display seqwholecdf.png
    ```
+   
+   ![seqwholecdf.png](https://github.com/jshwaa/HW4_files/blob/master/seqwholecdf.png "seqwholecdf.png")
+   
+   
    For sequences __<=100kb__:
    ```
    mkfifo sequnder_fifo
@@ -188,6 +198,10 @@ __Because the calculations will be for the whole genome and two genome partition
 
    display sequnder.png
    ```
+   
+   ![sequnder.png](https://github.com/jshwaa/HW4_files/blob/master/sequnder.png "sequnder.png")
+   
+   
    For sequences __>100kb__:
    ```
     mkfifo seqover_fifo
@@ -203,7 +217,9 @@ __Because the calculations will be for the whole genome and two genome partition
 
    display seqover.png
    ```
-
+   
+   ![seqover.png](https://github.com/jshwaa/HW4_files/blob/master/seqover.png "seqover.png")
+   
    
 # Genome assembly
 __Note: This part of homework 4 is still being arranged. When this note is gone, it should be ready.__
@@ -283,6 +299,8 @@ source /pub/jje/ee282/bin/.buscorc
    
    display contigalignedfilter.png
    ```
+   
+   ![contigalignedfilter.png](https://github.com/jshwaa/HW4_files/blob/master/contigalignedfilter.png "contigalignedfilter.png")
 
 
    __3. Compare your assembly to both the contig assembly and the scaffold assembly from the Drosophila melanogaster on FlyBase using a         contiguity plot (Hint: use plotCDF2 as demonstrated in class and see this example)__
@@ -302,6 +320,9 @@ source /pub/jje/ee282/bin/.buscorc
    
    rm {FBscaffold,FBcontig,minimap}_fifo
    ```
+
+   ![minimapCDF.png](https://github.com/jshwaa/HW4_files/blob/master/minimapCDF.png "minimapCDF.png")
+
 
    __4. Calculate BUSCO scores of both assemblies and compare them__
    
@@ -330,3 +351,4 @@ source /pub/jje/ee282/bin/.buscorc
         2799    Total BUSCO groups searched
    ```
    What BUSCO analysis tells us is that the quality of the FlyBase contigs for Drosophila melanogaster is much higher than those 	    generated via minimap/miniasm, as the former has virtually every universal single-copy ortholog checked for by BUSCO while the latter    only has 13. As such, the miniasm assembly is missing a much larger proportion of BUSCOs (98.4% missing vs. 0.5% for FlyBase) and is    of much lower quality.
+   
