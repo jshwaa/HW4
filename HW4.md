@@ -13,8 +13,8 @@ __Because the calculations will be for two genome partitions, there will be 6 to
 
 First, load the requisite modules and files for this assignment:
 ```
-mkdir ~/homework4
-cd ~/homework4
+mkdir ~/hw4
+cd ~/hw4
 module load jje/jjeutils
 module load rstudio
 wget ftp://ftp.flybase.net/genomes/Drosophila_melanogaster/current/fasta/dmel-all-chromosome-r6.24.fasta.gz
