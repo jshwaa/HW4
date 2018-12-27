@@ -220,7 +220,9 @@ __Because the calculations will be for the whole genome and two genome partition
    
    ![seqover.png](https://github.com/jshwaa/HW4_files/blob/master/seqover.png "seqover.png")
    
-   
+### Comments on "Summarize partitions of a genome assembly"
+Great job. I see what you were trying to accomplish with the histogram plots for GC and length. However, I think using the ```hist()``` function and playing around with the bins and the scale (maybe log scale on the x-axis) would more successfully capture the distribution than using ```plot(type = 'h')``` does. Or you could try ```geom_histogram()``` from ggplot2. Otherwise, nice work.
+
 # Genome assembly
 __Note: This part of homework 4 is still being arranged. When this note is gone, it should be ready.__
 
